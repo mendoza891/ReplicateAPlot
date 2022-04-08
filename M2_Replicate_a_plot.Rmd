@@ -1,0 +1,80 @@
+---
+title: 'ST 537: Replicate a Plot'
+author: Brandon Booth  
+output: pdf_document
+---
+
+```{r}
+#install.packages("lubridate")
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+```
+
+Option 3: Wildfires in California
+From: https://www.buzzfeednews.com/article/peteraldhous/california-wildfires-people-climate
+
+
+Get the data:
+```{r}
+wildfires <- readr::read_csv("https://raw.githubusercontent.com/BuzzFeedNews/2018-07-wildfire-trends/master/data/calfire_frap.csv") %>% 
+  mutate(plot_date = as.Date(format(alarm_date,"2017-%m-%d")))
+```
+
+
+```{r}
+wildfires
+#wildfires['month'] <- as.numeric(format(wildfires$alarm_date,'%m'))
+wildfires['month'] <- month.name[as.numeric(format(wildfires$alarm_date,'%m'))]
+wildfires['month_abb'] <- month.abb[as.numeric(format(wildfires$alarm_date,'%m'))]
+wildfires['day_of_year'] <- yday(wildfires$alarm_date)
+wildfires
+
+ggplot(wildfires, aes(x = day_of_year, y = -year_, size = shape_area)) +
+  geom_point(colour = "orange") +
+  theme_classic(18) +
+  theme(axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    axis.line = element_blank(),
+    axis.title = element_blank())
+
+
+ggplot(wildfires, aes(x = day_of_year, y = -year_, size = shape_area)) +
+  geom_point(colour = "orange", alpha = 0.5) +
+  #theme_classic(15) +
+  
+  #theme(panel.background = element_rect(fill = 'black', color = 'black')) +
+  theme(
+    panel.background = element_rect(fill = 'black', color = 'black'),
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(colour = "grey", size = .1),
+    panel.grid.minor.y = element_line(colour = "grey", size = .1),
+    #panel.spacing.y = unit(.1, "lines"),
+    #panel.grid.major.y = element_line(colour = "black", size = .1),
+    #panel.grid.major.x = element_line(colour = "black", size = .1),
+    #axis.text = element_blank(),
+    axis.line = element_blank()
+    ,axis.title = element_blank()
+    )
+
+?theme()
+```
+
+
+```{r}
+ggplot(wildfires, aes(x = day_of_year, y = -year_, size = shape_area)) +
+  geom_point(colour = "orange", alpha = 0.5) +
+
+  #scale_y_continuous(breaks = seq(10, 35, by = 1)) +
+
+  theme(
+    #legend.position = "none",
+    panel.background = element_rect(fill = 'black', color = 'black'),
+    panel.grid.major.y = element_line(colour = "grey", size = .1),
+    panel.grid.minor.y = element_line(colour = "grey", size = .1),
+
+    panel.grid = element_blank(),
+    axis.line = element_blank(),
+    axis.title = element_blank()
+    )
+```
